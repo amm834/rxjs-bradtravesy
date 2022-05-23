@@ -1,35 +1,36 @@
-import {fromPromise} from "rxjs/internal/observable/innerFrom";
-import {select} from "./util";
-import {fromEvent, interval, range, take, timer} from "rxjs";
+import {from, interval, map, pluck, take} from "rxjs";
+
 
 interval(100)
-    .pipe(take(5))
-    .subscribe({
-        next(value) {
-            console.log(value)
-        },
-        complete() {
-            console.log('Complete')
-        }
+    .pipe(
+        take(5),
+        map(value => value * 2)
+    )
+    .subscribe(x => {
+        console.log(x)
     })
 
-range(100, 200)
-    .subscribe({
-        next(value) {
-            console.log(value)
-        },
-        complete() {
-            console.log('Complete')
-        }
+
+from(['Mg Mg', 'Aung Aung'])
+    .pipe(
+        map(name => name.toUpperCase()),
+        map(name => `I am ${name}`)
+    )
+    .subscribe(name => {
+        console.log(name)
     })
 
-timer(5000, 1000)
-    .pipe(take(5))
-    .subscribe({
-        next(value) {
-            console.log(value)
-        },
-        complete() {
-            console.log('Complete')
-        }
+
+let posts = [
+    {name: "Mg Mg", age: 17},
+    {name: "Aung Aung", age: 18},
+]
+
+from(posts)
+    .pipe(
+        pluck('name'),
+        map(name => name.toUpperCase()),
+    )
+    .subscribe(value => {
+        console.log(value)
     })
