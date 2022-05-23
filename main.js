@@ -1,21 +1,31 @@
-import {catchError, Observable, of} from "rxjs";
+import {fromPromise} from "rxjs/internal/observable/innerFrom";
+import {select} from "./util";
+import {fromEvent} from "rxjs";
 
-const observable = new Observable(subscriber => {
-    subscriber.next("Hello World")
-    subscriber.error(new Error("Hey I am error"))
-    subscriber.complete()
+const future = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("Hey")
+    }, 3000)
 })
 
-observable
-    .subscribe(
-        {
-            next(value) {
-                console.log(value)
-            },
-            error(err) {
-                console.log(err)
-            },
-            complete() {
-                console.log('Completed')
-            },
+// fromPromise(future)
+//     .subscribe(resolve => {
+//             console.log(resolve)
+//         },
+//     )
+
+
+async function getUser(name) {
+    return (await fetch(`https://api.github.com/users/${name}`)).json()
+}
+
+const input = select('input')
+
+const inputStream = fromEvent(input, 'input')
+inputStream.subscribe(e => {
+    fromPromise(getUser(e.target.value))
+        .subscribe(user => {
+            console.log(user)
         })
+})
+
