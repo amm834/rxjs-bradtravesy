@@ -1,36 +1,9 @@
-import {from, interval, map, pluck, take} from "rxjs";
+import {from, interval, map, merge, mergeAll, pluck, take} from "rxjs";
 
 
-interval(100)
-    .pipe(
-        take(5),
-        map(value => value * 2)
-    )
-    .subscribe(x => {
-        console.log(x)
-    })
-
-
-from(['Mg Mg', 'Aung Aung'])
-    .pipe(
-        map(name => name.toUpperCase()),
-        map(name => `I am ${name}`)
-    )
-    .subscribe(name => {
-        console.log(name)
-    })
-
-
-let posts = [
-    {name: "Mg Mg", age: 17},
-    {name: "Aung Aung", age: 18},
-]
-
-from(posts)
-    .pipe(
-        pluck('name'),
-        map(name => name.toUpperCase()),
-    )
-    .subscribe(value => {
-        console.log(value)
-    })
+let ob1 = interval(500).pipe(map(x => "Merge 1 " + x))
+let ob2 = interval(2000)
+    .pipe(map(x => "Merge 1 " + x), mergeAll())
+ob2.subscribe(x => {
+    console.log(x)
+})
