@@ -1,31 +1,35 @@
 import {fromPromise} from "rxjs/internal/observable/innerFrom";
 import {select} from "./util";
-import {fromEvent} from "rxjs";
+import {fromEvent, interval, range, take, timer} from "rxjs";
 
-const future = new Promise((resolve, reject) => {
-    setTimeout(() => {
-        resolve("Hey")
-    }, 3000)
-})
+interval(100)
+    .pipe(take(5))
+    .subscribe({
+        next(value) {
+            console.log(value)
+        },
+        complete() {
+            console.log('Complete')
+        }
+    })
 
-// fromPromise(future)
-//     .subscribe(resolve => {
-//             console.log(resolve)
-//         },
-//     )
+range(100, 200)
+    .subscribe({
+        next(value) {
+            console.log(value)
+        },
+        complete() {
+            console.log('Complete')
+        }
+    })
 
-
-async function getUser(name) {
-    return (await fetch(`https://api.github.com/users/${name}`)).json()
-}
-
-const input = select('input')
-
-const inputStream = fromEvent(input, 'input')
-inputStream.subscribe(e => {
-    fromPromise(getUser(e.target.value))
-        .subscribe(user => {
-            console.log(user)
-        })
-})
-
+timer(5000, 1000)
+    .pipe(take(5))
+    .subscribe({
+        next(value) {
+            console.log(value)
+        },
+        complete() {
+            console.log('Complete')
+        }
+    })
